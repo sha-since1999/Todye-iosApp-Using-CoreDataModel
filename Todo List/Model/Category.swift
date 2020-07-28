@@ -8,7 +8,7 @@
 
 import Foundation
 import RealmSwift
-class Data : Object {
-    @objc dynamic var title : String? = nil
-    var isdone : Bool? = false
+class Category : Object {
+    @objc dynamic var name : String? = nil
+    var items = List<Item>()
 }

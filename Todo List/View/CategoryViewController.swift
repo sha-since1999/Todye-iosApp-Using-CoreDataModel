@@ -133,7 +133,18 @@ extension CategoryViewController: UISearchBarDelegate{
 
 
     }
+
 //MARK: - Swipe cell Delegate method
-extension  : SwipeTableViewCellDelegate{
-      
+extension  CategoryViewController: SwipeTableViewCellDelegate{
+      func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+          guard orientation == .right else { return nil }
+
+          let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            print(" item has been delted")          }
+
+          // customize the action appearance
+          deleteAction.image = UIImage(named: "delete")
+
+          return [deleteAction]
+      }
 }

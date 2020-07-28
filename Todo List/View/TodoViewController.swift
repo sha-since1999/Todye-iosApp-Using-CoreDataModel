@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class TodoViewController: UITableViewController{
-    var itemArray = [Todo]()      // array of object
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var ToDoItems : Results<Item>?  // array of object
+    let realm = try! Realm()
     
-    var selectedCategory : ItemCategories? {
+    var selectedCategory : Category? {
         didSet{
             loadData()
             }
@@ -27,18 +27,19 @@ class TodoViewController: UITableViewController{
     //MARK: - table Data source
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemArray.count
-        
+        return ToDoItems?.count ?? 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ReusableCell", for: indexPath)
 
-        let item  = itemArray[indexPath.row]
+        if  let item  = ToDoItems?[indexPath.row] {
+            
         cell.textLabel?.text = item.title
-        
-        cell.accessoryType = item.isdone ? .checkmark: .none
-
-
+        cell.accessoryType = item.done ? .checkmark: .none
+            
+        } else {
+             cell.textLabel?.text = "No Todo Items"
+        }
         return cell
     }
     
@@ -50,13 +51,17 @@ class TodoViewController: UITableViewController{
 
 
 override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-    itemArray[indexPath.row].isdone = !itemArray[indexPath.row].isdone
-//    context.delete(itemArray[indexPath.row])
-//    itemArray.remove(at: indexPath.row)
-    
-    saveData()
-    
+    if let item = ToDoItems?[indexPath.row] {
+        do {
+            try realm.write{
+               // realm.delete(item)       //deletion of todo
+                item.done = !item.done
+            }
+        }catch{
+            print(" error in updating data\(error)")
+        }
+    }
+    tableView.reloadData()
     tableView.deselectRow(at: indexPath, animated: true)
     
     }
@@ -70,14 +75,23 @@ override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: Inde
 
         let action = UIAlertAction(title: "Add item", style: .default) { action in
             // this define what should happen when user press the addd buttonssss
-                
-            let item = Todo(context: self.context)
-                item.title = textField.text!
-                item.isdone = false
-                item.parentCategory = self.selectedCategory
-
-                self.itemArray.append(item)
-                self.saveData()
+            if let currentCategory = self.selectedCategory{
+                    do{
+                       
+                        try self.realm.write{
+                            let item = Item()
+                            item.title = textField.text!
+                            item.done = false
+                            item.dateCreated = Date()
+                            currentCategory.items.append(item)
+                           }
+                       }catch {
+                        print("error on saving data :\(error.localizedDescription)")
+                                   }
+            }
+           
+            
+                    self.tableView.reloadData()
         
                
         }
@@ -95,34 +109,8 @@ override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: Inde
     
 //MARK: - CURD
     
-    func saveData() {
-
-        do{
-            try context.save()
-        }catch {
-        
-            print("error on saving data :\(error.localizedDescription)")
-        }
-        self.tableView.reloadData()
-    }
-
-    func loadData(with request: NSFetchRequest<Todo> = Todo.fetchRequest() ,predicate : NSPredicate? = nil )  {
-        
-        let categoryPredicte = NSPredicate(format: "parentCategory.categoryTitle MATCHES %@", selectedCategory!.categoryTitle! )
-        
-        
-        if let additionaPredicate = predicate {
-              request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicte,additionaPredicate])
-        }else{
-            request.predicate = categoryPredicte
-        }
-  
-        
-        do{
-            itemArray = try context.fetch(request)
-        }catch{
-            print("error on loading data :\(error.localizedDescription)")
-        }
+    func loadData(){
+        ToDoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
     }
 
@@ -132,19 +120,11 @@ override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: Inde
 extension TodoViewController : UISearchBarDelegate {
    
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-    
-        let request : NSFetchRequest<Todo> = Todo.fetchRequest()
         
-        let predicate =  NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text! )
-        
-        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        
-        
-        loadData(with: request ,predicate: predicate)
+        ToDoItems = ToDoItems?.filter(NSPredicate(format: "title CONTAINS %@", searchBar.text!)).sorted(byKeyPath: "dateCreated", ascending: true)
+        tableView.reloadData()
         }
-       
-    
-   
+     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchBar.text?.count == 0{
             loadData()
