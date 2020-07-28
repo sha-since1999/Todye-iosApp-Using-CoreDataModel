@@ -24,6 +24,8 @@ class CatagoryViewController: UITableViewController{
     
 //MARK: - Table View Data Source
     
+    
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return catagoryArrey.count
         
