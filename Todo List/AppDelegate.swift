@@ -16,27 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-       //create data
-        let data = Data()
-        data.title = "Rohis"
-        data.isdone = true
-         
-        //create a real context and save data
-        do{
-            let realm = try Realm()
-            try realm.write{
-                realm.add(data)
-            }
-            
-        }catch{
-            print("error in installing new Realm \(error)")
-        }
-      
-     // to print the path of ream file
-            print(Realm.Configuration.defaultConfiguration.fileURL!)
-            
-        
         return true
     }
 
