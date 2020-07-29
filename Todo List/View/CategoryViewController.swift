@@ -34,9 +34,9 @@ class CategoryViewController: SwipeTableViewController {
         override func viewWillAppear(_ animated: Bool) {
             guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist.")
             }
-            navBar.backgroundColor = UIColor(hexString: "#00000")
+            navBar.backgroundColor = UIColor.flatGray()
             
-//            navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(  UIColor(hexString: "#ebecf1")!, returnFlat: true )  ]
+            navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf( UIColor.flatGray(), returnFlat: true )  ]
 //                      
         }
         
