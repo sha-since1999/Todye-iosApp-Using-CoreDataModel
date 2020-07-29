@@ -8,10 +8,10 @@
 
 import UIKit
 import RealmSwift
-import SwipeCellKit
 
 
-class CategoryViewController: UITableViewController{
+
+class CategoryViewController: SwipeTableViewController {
     
     var catagoryArrey : Results<Category>!  // this is auto updating Container (geericType)
    
@@ -20,8 +20,9 @@ class CategoryViewController: UITableViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
        print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! )
-     
+        tableView.rowHeight = 80.0
         loadData()
+        
     }
     
 //MARK: - Table View Data Source
@@ -32,16 +33,13 @@ class CategoryViewController: UITableViewController{
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CatagoryCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         let selectedItem = catagoryArrey?[indexPath.row]
-       
         cell.textLabel?.text = selectedItem?.name ?? "no categoreis"
     
         return cell
     }
-    
-    
     
     
 //MARK: - Table View Delegate
@@ -49,7 +47,7 @@ class CategoryViewController: UITableViewController{
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         performSegue(withIdentifier: "GoToItems", sender: self)
-    }
+        }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination  as! TodoViewController
         
@@ -107,9 +105,22 @@ class CategoryViewController: UITableViewController{
         
             tableView.reloadData()
         }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        super.updateModel(at: indexPath)
+                do{ try self.realm.write{
+                    self.realm.delete(self.catagoryArrey[indexPath.row])
+                    }}catch {
+                        print("Error in deletin :\(error)" )
+                }
+              
+        
+    }
 
 
 }
+
+
 
 
 //MARK: - SEARCHBAR DELGATE
@@ -117,7 +128,7 @@ class CategoryViewController: UITableViewController{
 extension CategoryViewController: UISearchBarDelegate{
        public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 
-        catagoryArrey = catagoryArrey?.filter(NSPredicate(format: "name CONTAINS %@", searchBar.text!)).sorted(byKeyPath: "name", ascending: true)
+        catagoryArrey = catagoryArrey.filter(NSPredicate(format: "name CONTAINS[cd] %@", searchBar.text!)).sorted(byKeyPath: "name", ascending: true)
              
         tableView.reloadData()
     }
@@ -133,18 +144,3 @@ extension CategoryViewController: UISearchBarDelegate{
 
 
     }
-
-//MARK: - Swipe cell Delegate method
-extension  CategoryViewController: SwipeTableViewCellDelegate{
-      func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-          guard orientation == .right else { return nil }
-
-          let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            print(" item has been delted")          }
-
-          // customize the action appearance
-          deleteAction.image = UIImage(named: "delete")
-
-          return [deleteAction]
-      }
-}

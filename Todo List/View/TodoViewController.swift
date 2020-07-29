@@ -9,18 +9,19 @@
 import UIKit
 import RealmSwift
 
-class TodoViewController: UITableViewController{
+class TodoViewController: SwipeTableViewController{
     var ToDoItems : Results<Item>?  // array of object
     let realm = try! Realm()
     
     var selectedCategory : Category? {
         didSet{
-            loadData()
+             loadData()
             }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.rowHeight = 80.0
         
     }
     
@@ -30,8 +31,8 @@ class TodoViewController: UITableViewController{
         return ToDoItems?.count ?? 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ReusableCell", for: indexPath)
-
+        
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         if  let item  = ToDoItems?[indexPath.row] {
             
         cell.textLabel?.text = item.title
@@ -113,6 +114,17 @@ override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: Inde
         ToDoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
     }
+    
+    override func updateModel(at indexPath: IndexPath) {
+              super.updateModel(at: indexPath)
+                do{ try self.realm.write{
+                    self.realm.delete((self.ToDoItems![indexPath.row]))
+                    }}catch {
+                        print("Error in deletin :\(error)" )
+                }
+                print("item has been deleted")
+        
+    }
 
 
 }
@@ -121,7 +133,7 @@ extension TodoViewController : UISearchBarDelegate {
    
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        ToDoItems = ToDoItems?.filter(NSPredicate(format: "title CONTAINS %@", searchBar.text!)).sorted(byKeyPath: "dateCreated", ascending: true)
+        ToDoItems = ToDoItems?.filter(NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)).sorted(byKeyPath: "dateCreated", ascending: true)
         tableView.reloadData()
         }
      
