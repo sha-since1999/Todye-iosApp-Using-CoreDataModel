@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class TodoViewController: SwipeTableViewController{
     var ToDoItems : Results<Item>?  // array of object
@@ -19,12 +20,36 @@ class TodoViewController: SwipeTableViewController{
             }
     }
     
+    
+    
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = 80.0
         
+       
+        
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+       
+        if let color = selectedCategory?.color{
+            
+            guard let navbar = navigationController?.navigationBar else { fatalError("nvigations controlller does  not exit")}
+           
+            searchBar.barTintColor = UIColor(hexString: color)
+            navbar.backgroundColor = UIColor(hexString: color)
+            navbar.tintColor = ContrastColorOf(  UIColor(hexString: color)!, returnFlat: true )
+             
+          title = selectedCategory?.name
+            navbar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(  UIColor(hexString: color)!, returnFlat: true )  ]
+           
+        }
+       
+        
+    }
     //MARK: - table Data source
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -38,6 +63,12 @@ class TodoViewController: SwipeTableViewController{
         cell.textLabel?.text = item.title
         cell.accessoryType = item.done ? .checkmark: .none
             
+            if let color =  HexColor(selectedCategory!.color)?.darken(byPercentage: (CGFloat(indexPath.row)/CGFloat(ToDoItems!.count))){
+
+                 cell.backgroundColor = color
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            }
+           
         } else {
              cell.textLabel?.text = "No Todo Items"
         }
@@ -45,8 +76,6 @@ class TodoViewController: SwipeTableViewController{
     }
     
 
-    
-  
 
 //MARK: -TableViewDelegate
 

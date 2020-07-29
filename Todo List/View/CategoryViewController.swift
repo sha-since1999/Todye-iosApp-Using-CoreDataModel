@@ -8,7 +8,7 @@
 
 import UIKit
 import RealmSwift
-
+import ChameleonFramework
 
 
 class CategoryViewController: SwipeTableViewController {
@@ -17,30 +17,48 @@ class CategoryViewController: SwipeTableViewController {
    
     let realm = try! Realm()
     
+    
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    
     override func viewDidLoad() {
-        super.viewDidLoad()
-       print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! )
-        tableView.rowHeight = 80.0
-        loadData()
+            super.viewDidLoad()
+           print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! )
+            tableView.rowHeight = 80.0
+            tableView.separatorStyle = .none
+            loadData()
+            
+            
+        }
         
-    }
-    
-//MARK: - Table View Data Source
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return catagoryArrey?.count ?? 1
+        override func viewWillAppear(_ animated: Bool) {
+            guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist.")
+            }
+            navBar.backgroundColor = UIColor(hexString: "#00000")
+            
+//            navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(  UIColor(hexString: "#ebecf1")!, returnFlat: true )  ]
+//                      
+        }
         
-    }
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+    //MARK: - Table View Data Source
         
-        let selectedItem = catagoryArrey?[indexPath.row]
-        cell.textLabel?.text = selectedItem?.name ?? "no categoreis"
-    
-        return cell
-    }
-    
+        override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            return catagoryArrey?.count ?? 1
+            
+        }
+        override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            
+            let cell = super.tableView(tableView, cellForRowAt: indexPath)
+            
+            let selectedItem = catagoryArrey?[indexPath.row]
+            cell.textLabel?.text = selectedItem?.name ?? "no categoreis"
+            cell.backgroundColor = FlatWhite().darken(byPercentage: (CGFloat(indexPath.row)/CGFloat(catagoryArrey!.count)))
+            cell.textLabel?.textColor = ContrastColorOf(HexColor(selectedItem!.color)!, returnFlat: true)
+         
+            return cell
+        }
+        
     
 //MARK: - Table View Delegate
     
@@ -66,6 +84,7 @@ class CategoryViewController: SwipeTableViewController {
         
             let newItem = Category()
             newItem.name = textField.text!
+            newItem.color = (UIColor.randomFlat()).hexValue()
 
             self.saveData(newItem)
 
@@ -87,7 +106,6 @@ class CategoryViewController: SwipeTableViewController {
  
     func saveData(_ category: Category) {
             do{
-                
                 try  realm.write{
                 realm.add(category)
                 }

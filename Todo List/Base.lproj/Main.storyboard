@@ -9,7 +9,7 @@
         <!--TodoViewController-->
         <scene sceneID="1T3-sL-peV">
             <objects>
-                <tableViewController title="TodoViewController" id="jrZ-uy-Oxa" customClass="TodoViewController" customModule="Todo_List_Storyboard" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="TodoViewController" modalPresentationStyle="fullScreen" id="jrZ-uy-Oxa" customClass="TodoViewController" customModule="Todo_List_Storyboard" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="hAH-SJ-J3c">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -17,6 +17,7 @@
                         <searchBar key="tableHeaderView" contentMode="redraw" id="Sao-M5-JQr">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <textInputTraits key="textInputTraits"/>
                             <connections>
                                 <outlet property="delegate" destination="jrZ-uy-Oxa" id="gVo-w5-Ijl"/>
@@ -37,27 +38,30 @@
                             <outlet property="delegate" destination="jrZ-uy-Oxa" id="1WV-RC-ejX"/>
                         </connections>
                     </tableView>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <navigationItem key="navigationItem" title="Todoye" id="13e-2O-tD5">
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="ztu-CL-y5v">
-                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="addPressed:" destination="jrZ-uy-Oxa" id="kPa-rR-OIn"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="searchBar" destination="Sao-M5-JQr" id="NyA-sR-sUs"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cAj-YH-0i7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2293" y="250"/>
+            <point key="canvasLocation" x="2094" y="250"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--ToDoye-->
         <scene sceneID="wKG-0c-jZR">
             <objects>
-                <navigationController id="fpL-bO-QGG" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="YHP-Qh-93d">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                <navigationController title="ToDoye" wantsFullScreenLayout="YES" extendedLayoutIncludesOpaqueBars="YES" modalPresentationStyle="overFullScreen" id="fpL-bO-QGG" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationBar key="navigationBar" contentMode="top" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="YHP-Qh-93d">
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" red="0.45009386540000001" green="0.98132258650000004" blue="0.4743030667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <connections>
                         <segue destination="ovG-Ld-z52" kind="relationship" relationship="rootViewController" id="lng-6W-G1p"/>
@@ -65,9 +69,9 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qpf-qT-A40" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="322" y="250"/>
+            <point key="canvasLocation" x="474" y="250"/>
         </scene>
-        <!--Category View Controller-->
+        <!--Todoye-->
         <scene sceneID="IBb-Su-otC">
             <objects>
                 <tableViewController id="ovG-Ld-z52" customClass="CategoryViewController" customModule="Todo_List_Storyboard" customModuleProvider="target" sceneMemberID="viewController">
@@ -75,7 +79,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" text="" id="h98-a2-Zzo">
+                        <searchBar key="tableHeaderView" contentMode="scaleToFill" text="" translucent="NO" id="h98-a2-Zzo">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <textInputTraits key="textInputTraits"/>
@@ -87,7 +91,7 @@
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" id="f73-1Z-09k" customClass="SwipeTableViewCell" customModule="SwipeCellKit">
                                 <rect key="frame" x="0.0" y="72" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="f73-1Z-09k" id="UEA-NT-qmh" customClass="SwipeTableViewCell" customModule="SwipeCellKit">
+                                <tableViewCellContentView key="contentView" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="f73-1Z-09k" id="UEA-NT-qmh" customClass="SwipeTableViewCell" customModule="SwipeCellKit">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
@@ -98,20 +102,21 @@
                             <outlet property="delegate" destination="ovG-Ld-z52" id="Rrn-Ny-REp"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="Fiy-z2-o9z">
-                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="Jl4-4M-S2F">
+                    <navigationItem key="navigationItem" title="Todoye" id="QSX-UH-JMj">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="CmB-vF-vag">
                             <connections>
-                                <action selector="addButtonPressed:" destination="ovG-Ld-z52" id="RiE-dq-mvc"/>
+                                <action selector="addButtonPressed:" destination="ovG-Ld-z52" id="7i4-bf-5d8"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <segue destination="jrZ-uy-Oxa" kind="show" identifier="GoToItems" id="Qrh-3I-YAi"/>
+                        <outlet property="searchBar" destination="h98-a2-Zzo" id="h7T-FN-yqn"/>
+                        <segue destination="jrZ-uy-Oxa" kind="show" identifier="GoToItems" animates="NO" id="Qrh-3I-YAi"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Sxg-L4-03x" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1097" y="250"/>
+            <point key="canvasLocation" x="1291" y="250"/>
         </scene>
     </scenes>
 </document>
